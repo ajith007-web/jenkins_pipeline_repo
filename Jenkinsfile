@@ -29,7 +29,6 @@ pipeline {
          stage("STAGE2"){
             steps{
                 echo "enviormentvar: ${ENVIRONMENTPIPE}"
-                echo "enviormentvar: ${ENVIRONMENTSTAGE1}"
                 echo "this is stage 2"
                 sh '''
                 #!/bin/bash
