@@ -9,11 +9,13 @@ pipeline {
                 ENVIRONMENTPIPE = "pipeline level"
     }
     stages{
-        stage("STAGE1"){
-            environment {
-                ENVIRONMENTSTAGE1 = "stage1 level"
+        stage{
+            parallel{
+               stage("STAGE1"){
+                 environment {
+                 ENVIRONMENTSTAGE1 = "stage1 level"
     }
-            steps{
+                steps{
                 echo "enviormentvar: ${ENVIRONMENTPIPE}"
                 echo "enviormentvar: ${ENVIRONMENTSTAGE1}"
                 echo "this is stage 1"
@@ -36,6 +38,8 @@ pipeline {
                 ls -lrt
                 sleep 5
                 '''
+            }
+         }
             }
         }
     }
