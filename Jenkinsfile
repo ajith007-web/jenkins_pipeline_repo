@@ -10,7 +10,7 @@ pipeline {
     }
     stages{
         stage{
-            parallel{
+            parallel(
                stage("STAGE1"){
                  environment {
                  ENVIRONMENTSTAGE1 = "stage1 level"
@@ -40,7 +40,7 @@ pipeline {
                 '''
             }
          }
-            }
+            )
         }
     }
 }
