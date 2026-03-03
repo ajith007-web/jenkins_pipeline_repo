@@ -4,13 +4,18 @@ pipeline {
     stages {
         stage('STAGE1') {
             steps {
-                catchError(buildResult: 'SUCCESS' ,stageResult: 'FAILURE'){
+                script{
+                try{
                echo "This is stage1 running"
                sh '''
                    sleep 5
                    exit 1
                '''
-
+               }
+               catch(err){
+                echo "ERROR caught: ${err}"
+                currentBuilt.result = 'SUCCESS'
+               }
                 }
             }
         }
