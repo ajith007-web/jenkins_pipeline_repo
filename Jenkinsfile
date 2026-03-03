@@ -55,7 +55,7 @@ pipeline {
 
         stage('FINAL') {
             when{
-                environment name: 'CURRENT_ENV', value: 'prod'
+                environment name: 'CURRENT_ENV', value: 'prodd'
             }
             steps {
                echo "This is FINAL running"
