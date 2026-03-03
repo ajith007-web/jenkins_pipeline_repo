@@ -1,5 +1,8 @@
 pipeline {
     agent any
+     environment {
+        CURRENT_ENV = 'prod'
+    }
 
     stages {
         stage('STAGE1_a') {
@@ -51,6 +54,9 @@ pipeline {
         }
 
         stage('FINAL') {
+            when{
+                environment name: 'CURRENT_ENV', value: 'prod'
+            }
             steps {
                echo "This is FINAL running"
                sh 'sleep 5'
