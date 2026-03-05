@@ -14,6 +14,15 @@ pipeline {
                 ])
             }
         }
+        stage('stage') {
+             steps{
+                sh'''
+                   pwd
+                   git branch
+                   ls -lrt
+                '''
+             }
+        }
         stage('STAGE1_a') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
