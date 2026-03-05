@@ -1,10 +1,16 @@
 pipeline {
     agent any
-     environment {
-        CURRENT_ENV = 'prod'
-    }
 
     stages {
+        stage{
+            steps{
+                checkout scmGit(
+                    branches: [[name: '*/main']], 
+                    extensions: [], 
+                    userRemoteConfigs: [[credentialsId: 'github-credentials',
+                    url: 'https://github.com/ajith007-web/MyGitpractice.git']])
+            }
+        }
         stage('STAGE1_a') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -54,9 +60,6 @@ pipeline {
         }
 
         stage('FINAL') {
-            when{
-                environment name: 'CURRENT_ENV', value: 'prodd'
-            }
             steps {
                echo "This is FINAL running"
                sh 'sleep 5'
