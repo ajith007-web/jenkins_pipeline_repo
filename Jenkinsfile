@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('CHECKOUT') {
             steps{
-                checkout ([ $class: 'GitSCM'
+                checkout ([ $class: 'GitSCM',
                     branches: [[name: '*/main']], 
                     extensions: [], 
                     userRemoteConfigs: [[
