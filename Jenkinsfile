@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('CHECKOUT') {
             steps{
-                checkout scmGit([ $class: 'GitSCM'
+                checkout ([ $class: 'GitSCM'
                     branches: [[name: '*/main']], 
                     extensions: [], 
                     userRemoteConfigs: [[
@@ -15,6 +15,11 @@ pipeline {
             }
         }
         stage('stage') {
+            when {
+                expression {
+                    return env.GIT_BRANCH == '*/main'
+                }
+            }
              steps{
                 sh'''
                    pwd
