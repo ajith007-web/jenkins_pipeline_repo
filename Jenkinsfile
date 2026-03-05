@@ -4,11 +4,14 @@ pipeline {
     stages {
         stage('CHECKOUT') {
             steps{
-                checkout scmGit(
+                checkout scmGit([ $class: 'GitSCM'
                     branches: [[name: '*/main']], 
                     extensions: [], 
-                    userRemoteConfigs: [[credentialsId: 'github-credentials',
-                    url: 'https://github.com/ajith007-web/MyGitpractice.git']])
+                    userRemoteConfigs: [[
+                        credentialsId: 'github-credentials',
+                        url: 'https://github.com/ajith007-web/MyGitpractice.git'
+                        ]]
+                ])
             }
         }
         stage('STAGE1_a') {
