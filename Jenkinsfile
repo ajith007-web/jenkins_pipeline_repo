@@ -3,8 +3,6 @@ pipeline {
     options { 
         disableConcurrentBuilds(abortPrevious: true)
         timeout(time: 1, unit: 'HOURS')
-        retry(3)
-
         }
 
     stages {
