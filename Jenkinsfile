@@ -12,7 +12,7 @@ pipeline {
                     branches: [[name: '*/main']], 
                     extensions: [], 
                     userRemoteConfigs: [[
-                        credentialsId: 'github-credentials',
+                        credentialsId: 'github',
                         url: 'https://github.com/ajith007-web/MyGitpractice.git'
                         ]]
                 ])
