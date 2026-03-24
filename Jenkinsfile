@@ -1,6 +1,9 @@
 pipeline{
     agent any 
-
+    parameters { 
+        choice(name: 'ACTION', choices: ['start', 'stop', 'reboot', 'terminate'], description: '') 
+        string(name: 'INSTANCE_ID', defaultValue: '', description: 'enter instance id')
+        }
     stages{
         stage("manage EC2 Instance"){
             steps{
