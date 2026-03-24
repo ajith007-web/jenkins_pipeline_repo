@@ -1,89 +1,44 @@
-pipeline {
-    agent any
-    options { 
-        disableConcurrentBuilds(abortPrevious: true)
-        timeout(time: 1, unit: 'HOURS')
-        }
+pipeline{
+    agent any 
 
-    stages {
-        stage('CHECKOUT') {
+    stages{
+        stage("manage EC2 Instance"){
             steps{
-                checkout ([ $class: 'GitSCM',
-                    branches: [[name: '*/main']], 
-                    extensions: [], 
-                    userRemoteConfigs: [[
-                        credentialsId: 'github-credentials',
-                        url: 'https://github.com/ajith007-web/MyGitpractice.git'
-                        ]]
-                ])
-            }
-        }
-        stage('stage') {
-            when {
-                expression {
-                    return env.GIT_BRANCH == 'origin/main'
-                }
-            }
-             steps{
-                sh'''
-                   pwd
-                   git branch
-                   ls -lrt
-                '''
-             }
-        }
-        stage('STAGE1_a') {
-            steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    echo "This is stage1 running"
-                    sh ''' 
-                        sleep 5
-                        exit 1
-                    '''
-                }
-            }
-        }
-        
-        stage('STAGE1_b') {
-            steps {
-                script { 
-                    try {
-                        sh ''' 
-                            sleep 5
-                            exit 1
-                        '''
-                    } 
-                    catch (err) {
-                        echo "Error caught: ${err}"
-                        currentBuild.result = 'SUCCESS'
+                script{
+                    def instanceId = params.INSTANCE_ID
+                    def action = params.ACTION
+                    switch (action) {
+                        case 'start':
+                          sh "aws ec2 start-instances --instance-ids ${instanceId}"
+                          echo "Instance ${instanceId} starting"
+                          break
+                        case 'stop':
+                          sh "aws ec2 stop-instances --instance-ids ${instanceId}" 
+                          echo "Instance ${instanceId} stopping"
+                          break 
+                        case 'reboot':
+                          sh "aws ec2 reboot-instances --instance-ids ${instanceId}"
+                          echo "Instance ${instanceId} rebooting"
+                          break
+                        case 'terminate':
+                          sh "aws ec2 terminate-instances --instance-ids ${instanceId}"
+                          echo "Instance ${instanceId} terminating"
+                          break    
+                        default:
+                          echo "Invalid action: ${action}"
+                          break
                     }
                 }
             }
         }
-
-
-        stage('PARALLEL TESTING') {
-            parallel {
-                stage('WINDOWS TESTING') {
-                    steps {
-                        echo "This is WINDOWS testing running"
-                        sh 'sleep 5'
-                    }
-                }
-
-                stage('MACOS TESTING') {
-                    steps {
-                        echo "This is MACOS testing running"
-                        sh 'sleep 5'
-                    }
-                }
-            }
-        }
-
-        stage('FINAL') {
+        stage('varify status'){
             steps {
-               echo "This is FINAL running"
-               sh 'sleep 5'
+                script {
+                    echo "waiting 30 seconds for state change"
+                    sleep 30
+                    def status = sh(script: "aws ec2 describe-instances --instance-ids ${params.INSTANCE_ID} --query 'Reservations[0].Instances[0].State.Name' --output text", returnStdout :true).trim()
+                    echo "status is ${status}"
+                }
             }
         }
     }
